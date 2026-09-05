@@ -67,4 +67,11 @@ userSchema.methods.comparePassword = function (passwordInput: string) {
   return bcrypt.compare(passwordInput, this.password);
 };
 
+userSchema.set("toJSON", {
+  transform: (_doc, ret) => {
+    Reflect.deleteProperty(ret, "password");
+    return ret;
+  },
+});
+
 export const User = model<IUser>("User", userSchema);
