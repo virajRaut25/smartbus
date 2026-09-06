@@ -67,5 +67,7 @@ const routeSchema = new Schema<IRoute>(
 );
 
 routeSchema.index({ source: 1, destination: 1 });
+routeSchema.index({ "boardingPoints.name": 1 });
+routeSchema.index({ "alightingPoints.name": 1 });
 
 export const Route = model<IRoute>("Route", routeSchema);
