@@ -8,6 +8,10 @@ export function refreshTokenSetKey(userId: string): string {
   return `refresh:user:${userId}`;
 }
 
+export function seatLockKey(tripId: string, seatNumber: string): string {
+  return `lock:trip:${tripId}:seat:${seatNumber}`;
+}
+
 export interface SearchCacheKeyParams {
   from: string;
   to: string;

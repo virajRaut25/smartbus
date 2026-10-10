@@ -20,6 +20,11 @@ export function errorHandler(
     return;
   }
 
+  if (err instanceof mongoose.Error.CastError) {
+    sendError(res, 400, `Invalid value for "${err.path}": ${String(err.value)}`);
+    return;
+  }
+
   if (err instanceof mongoose.Error.ValidationError) {
     const fieldErrors = Object.fromEntries(
       Object.entries(err.errors).map(([path, validatorError]) => [path, validatorError.message])

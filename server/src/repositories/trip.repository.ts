@@ -3,6 +3,10 @@ import { Route, type IRoute } from "../models/route.model.js";
 import { Bus } from "../models/bus.model.js";
 import { TripStatus, type BusType } from "../types/enums.js";
 
+export function findTripById(tripId: string): Promise<ITrip | null> {
+  return Trip.findById(tripId);
+}
+
 export interface SearchTripsParams {
   from: string;
   to: string;

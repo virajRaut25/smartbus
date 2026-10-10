@@ -5,7 +5,9 @@ import { Operator } from "../models/operator.model.js";
 import { Bus } from "../models/bus.model.js";
 import { Route } from "../models/route.model.js";
 import { Trip } from "../models/trip.model.js";
+import { Seat } from "../models/seat.model.js";
 import { BusType, TripStatus } from "../types/enums.js";
+import { generateSeatsForTrip } from "../services/seat.service.js";
 
 function atHour(daysFromNow: number, hour: number, minute = 0): Date {
   const date = new Date();
@@ -22,6 +24,7 @@ async function seed(): Promise<void> {
     Bus.deleteMany({}),
     Route.deleteMany({}),
     Trip.deleteMany({}),
+    Seat.deleteMany({}),
   ]);
 
   const operator = await Operator.create({
@@ -64,7 +67,7 @@ async function seed(): Promise<void> {
     ],
   });
 
-  await Trip.create([
+  const trips = await Trip.create([
     {
       routeId: route._id,
       busId: sleeperBus._id,
@@ -107,7 +110,17 @@ async function seed(): Promise<void> {
     },
   ]);
 
-  console.log("Seed complete: 1 operator, 2 buses, 1 route, 4 trips");
+  const tripBuses = [sleeperBus, seaterBus, sleeperBus, seaterBus];
+  for (let i = 0; i < trips.length; i++) {
+    const bus = tripBuses[i]!;
+    await generateSeatsForTrip({
+      tripId: trips[i]!._id.toString(),
+      totalSeats: bus.totalSeats,
+      busType: bus.busType,
+    });
+  }
+
+  console.log("Seed complete: 1 operator, 2 buses, 1 route, 4 trips, seats generated for each trip");
 }
 
 try {
